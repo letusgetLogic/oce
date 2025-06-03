@@ -148,15 +148,15 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5beaa15033adee54e92aea190a9ad86a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  room1Door: {fileID: 0}
-  room2DoorC: {fileID: 0}
-  room2DoorS: {fileID: 0}
-  room3Door: {fileID: 0}
-  room4Door: {fileID: 0}
-  roomScale: 0
-  bossRoom: {fileID: 0}
-  treasureRoom: {fileID: 0}
-  shopRoom: {fileID: 0}
+  room1Door: {fileID: 8865519529106706120, guid: de38c3b0631e2e94e8301ad0cf57a935, type: 3}
+  room2DoorC: {fileID: 158048332660305706, guid: e4359b3962a3bca4dbd11b2b2b800907, type: 3}
+  room2DoorS: {fileID: 5994228877171540154, guid: d1661917e2c88a645a0f8d62dbd8bdf4, type: 3}
+  room3Door: {fileID: 3917424396237906995, guid: 9cdd4e0b675453341bc091c9069e2fe4, type: 3}
+  room4Door: {fileID: 6661847129076678500, guid: 386c3fa1d1bb1244c8c2a55905cd8393, type: 3}
+  roomScale: 10
+  bossRoom: {fileID: 7699032478535390809, guid: e838bb8957811d640ac1d07fffa2e56b, type: 3}
+  treasureRoom: {fileID: 5801750025358282823, guid: 85fef0dab9599e4449c57f8eb6a617f6, type: 3}
+  shopRoom: {fileID: 2538189017242351850, guid: 4986556dc32d5d9449f153f4f3b77ac7, type: 3}
 --- !u!4 &674108270
 Transform:
   m_ObjectHideFlags: 0

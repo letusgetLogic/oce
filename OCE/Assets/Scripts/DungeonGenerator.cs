@@ -3,11 +3,11 @@ using UnityEngine;
 
 public class DungeonGenerator : MonoBehaviour
 {
-    public enum RoomType 
+    public enum RoomType
     {
         free = -1,
         normal,
-        boss, 
+        boss,
         treasure,
         shop,
     }
@@ -31,11 +31,16 @@ public class DungeonGenerator : MonoBehaviour
     private const int minEndRooms = 2;
     private List<Vector2Int> endRoomsList;
     private Vector3 startPos;
-    
+
     private void Awake()
     {
         startPos = new Vector3(mapWidth, 0.0f, mapHeight) * 0.5f * -1.0f * roomScale;
         map = GenerateGridMap(2, ref endRoomsList);
+    }
+
+    private void Start()
+    {
+        GenerateMapObjects(map);
     }
 
     private int[,] GenerateGridMap(int level, ref List<Vector2Int> endRooms)
@@ -194,5 +199,140 @@ public class DungeonGenerator : MonoBehaviour
         }
 
         return count >= countOfRooms;
+    }
+
+    private void GenerateMapObjects(int[,] map)
+    {
+        int width = map.GetLength(0);
+        int height = map.GetLength(1);
+
+        for (int y = 0; y < height; y++)
+        {
+            for (int x = 0; x < width; x++)
+            {
+                // 1. habe ich einen Raum
+                if (map[x, y] == (int)RoomType.free)
+                    continue;
+
+                // 2. Wie ist der Nachbarscount
+                Vector2Int currentPos = new Vector2Int(x, y);
+                int neighboursConut = GetNeighboursCount(map, currentPos);
+
+                // 3. freespacecount
+                Vector2Int[] posToCheck = new Vector2Int[]
+                {
+                    currentPos + Vector2Int.up,
+                    currentPos + Vector2Int.right,
+                    currentPos + Vector2Int.down,
+                    currentPos + Vector2Int.left,
+                };
+
+                bool[] freespaces = new bool[]
+                {
+                    true,
+                    true,
+                    true,
+                    true,
+                };
+
+                for (int i = 0; i < posToCheck.Length; i++)
+                {
+                    Vector2Int toCheck = posToCheck[i];
+                    if (toCheck.x >= 0 && toCheck.x < width && toCheck.y >= 0 && toCheck.y < height)
+                    {
+                        if (map[toCheck.x, toCheck.y] != (int)RoomType.free)
+                        {
+                            freespaces[i] = false;
+                        }
+                    }
+                }
+
+                // 4. Raum Rotation
+                GameObject newRoom;
+                float rotation = 0.0f;
+
+                switch (neighboursConut)
+                {
+                    case 1:
+
+                        if (!freespaces[0])
+                            rotation = 180.0f;
+                        else if (!freespaces[1])
+                            rotation = -90.0f;
+                        else if (!freespaces[2])
+                            rotation = 0.0f;
+                        else if (!freespaces[3])
+                            rotation = 90.0f;
+
+                        newRoom = Instantiate(room1Door, this.transform);
+                        newRoom.transform.localPosition = startPos + new Vector3(currentPos.x, 0.0f, currentPos.y) * roomScale;
+                        newRoom.transform.rotation = Quaternion.Euler(Vector3.up * rotation);
+                        break;
+
+                    case 2:
+
+                        GameObject toSpawn = room2DoorC;
+                        if (!freespaces[0] && !freespaces[2])
+                        {
+                            rotation = 0.0f;
+                            toSpawn = room2DoorS;
+                        }
+                        else if (!freespaces[1] && !freespaces[3])
+                        {
+                            rotation = 90.0f;
+                            toSpawn = room2DoorS;
+                        }
+
+                        else if (!freespaces[0] && !freespaces[1])
+                            rotation = -90.0f;
+
+                        else if (!freespaces[0] && !freespaces[3])
+                            rotation = 180.0f;
+
+                        else if (!freespaces[2] && !freespaces[3])
+                            rotation = 90.0f;
+
+                        else
+                            rotation = 0.0f;
+
+                        newRoom = Instantiate(toSpawn, this.transform);
+                        newRoom.transform.localPosition = startPos + new Vector3(currentPos.x, 0.0f, currentPos.y) * roomScale;
+                        newRoom.transform.rotation = Quaternion.Euler(Vector3.up * rotation);
+                        break;
+
+                    case 3:
+
+                        if (freespaces[0])
+                            rotation = 0.0f;
+
+                        else if (freespaces[1])
+                            rotation = 90.0f;
+
+                        else if (freespaces[2])
+                            rotation = 180.0f;
+
+                        else if (freespaces[3])
+                            rotation = -90.0f;
+
+                        newRoom = Instantiate(room3Door, this.transform);
+                        newRoom.transform.localPosition = startPos + new Vector3(currentPos.x, 0.0f, currentPos.y) * roomScale;
+                        newRoom.transform.rotation = Quaternion.Euler(Vector3.up * rotation);
+                        break;
+
+                    case 4:
+
+                        newRoom = Instantiate(room4Door, this.transform);
+                        newRoom.transform.localPosition = startPos + new Vector3(currentPos.x, 0.0f, currentPos.y) * roomScale;
+                        newRoom.transform.rotation = Quaternion.Euler(Vector3.up * rotation);
+                        break;
+
+                    default:
+
+                        newRoom = new GameObject();
+                        newRoom.transform.SetParent(this.transform);
+                        break;
+                }
+            }
+        }
     }
 }
